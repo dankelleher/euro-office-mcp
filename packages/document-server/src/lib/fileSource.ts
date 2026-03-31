@@ -57,7 +57,7 @@ const serveLocalFile = (
       }
     });
 
-    server.listen(0, () => {
+    server.listen(0, "127.0.0.1", () => {
       const address = server.address();
       if (!address || typeof address === "string") {
         reject(new Error("Failed to get server address"));

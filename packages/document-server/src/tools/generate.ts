@@ -53,6 +53,11 @@ export const handleGenerateDocument = async (
     if (input.outputPath && entries.length > 0) {
       const [, url] = entries[0];
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to download generated file: HTTP ${response.status} ${response.statusText}`,
+        );
+      }
       const buffer = Buffer.from(await response.arrayBuffer());
       await writeFile(input.outputPath, buffer);
       return {

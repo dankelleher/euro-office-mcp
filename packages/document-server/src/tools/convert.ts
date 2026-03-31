@@ -30,7 +30,9 @@ interface ConvertDocumentInput {
 }
 
 const inferFileType = (source: string): string => {
-  const ext = extname(source).replace(".", "").toLowerCase();
+  // Strip query string and fragment for URL inputs
+  const pathOnly = source.split("?")[0].split("#")[0];
+  const ext = extname(pathOnly).replace(".", "").toLowerCase();
   return ext || "docx";
 };
 
@@ -69,6 +71,11 @@ export const handleConvertDocument = async (
 
     if (input.outputPath) {
       const response = await fetch(result.fileUrl);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to download converted file: HTTP ${response.status} ${response.statusText}`,
+        );
+      }
       const buffer = Buffer.from(await response.arrayBuffer());
       await writeFile(input.outputPath, buffer);
       return {
