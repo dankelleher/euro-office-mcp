@@ -3,6 +3,11 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { loadConfig } from "./config.js";
 import { DocumentServerClient } from "./client/documentServer.js";
 import { registerConvertTool } from "./tools/convert.js";
+import { registerGenerateTool } from "./tools/generate.js";
+import { registerStatusTool } from "./tools/status.js";
+import { registerSaveTool } from "./tools/save.js";
+import { registerRenameTool } from "./tools/rename.js";
+import { registerAdminTools } from "./tools/admin.js";
 
 const config = loadConfig();
 const client = new DocumentServerClient(config);
@@ -13,6 +18,11 @@ const server = new McpServer({
 });
 
 registerConvertTool(server, client, config.fileServerHost);
+registerGenerateTool(server, client, config.fileServerHost);
+registerStatusTool(server, client);
+registerSaveTool(server, client);
+registerRenameTool(server, client);
+registerAdminTools(server, client);
 
 const main = async () => {
   const transport = new StdioServerTransport();
