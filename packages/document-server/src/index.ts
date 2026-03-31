@@ -1,13 +1,18 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadConfig } from "./config.js";
+import { DocumentServerClient } from "./client/documentServer.js";
+import { registerConvertTool } from "./tools/convert.js";
 
 const config = loadConfig();
+const client = new DocumentServerClient(config);
 
 const server = new McpServer({
   name: "euro-office-document-server",
   version: "0.1.0",
 });
+
+registerConvertTool(server, client, config.fileServerHost);
 
 const main = async () => {
   const transport = new StdioServerTransport();
