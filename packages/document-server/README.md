@@ -16,8 +16,12 @@ pnpm build
 | `EURO_OFFICE_URL` | Document Server base URL | `http://localhost:8080` |
 | `EURO_OFFICE_JWT_SECRET` | JWT signing secret | `my_jwt_secret` |
 | `EURO_OFFICE_FILE_SERVER_HOST` | Hostname for ephemeral file server (use `host.docker.internal` for Docker) | `localhost` |
+| `MCP_TRANSPORT` | Transport mode: `stdio` or `http` | `stdio` |
+| `MCP_PORT` | HTTP port (only when `MCP_TRANSPORT=http`) | `3000` |
 
-## Usage with Claude Desktop / VS Code
+## Usage
+
+### Option 1: Claude Desktop / VS Code (stdio)
 
 Add to your MCP config:
 
@@ -34,6 +38,28 @@ Add to your MCP config:
     }
   }
 }
+```
+
+### Option 2: Streamable HTTP (Docker / Nextcloud Context Agent)
+
+```bash
+docker build -f packages/document-server/Dockerfile -t euro-office-mcp .
+docker run -d -p 3100:3000 \
+  -e EURO_OFFICE_URL=http://your-document-server:8080 \
+  -e EURO_OFFICE_JWT_SECRET=secret \
+  euro-office-mcp
+```
+
+Then register in Nextcloud Context Agent admin settings (MCP Config):
+
+```json
+{
+  "euro-office": {
+    "url": "http://euro-office-mcp:3000/mcp",
+    "transport": "streamable_http"
+  }
+}
+```
 ```
 
 ## Tools
